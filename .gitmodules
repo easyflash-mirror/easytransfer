@@ -1,0 +1,6 @@
+[submodule "eload"]
+	path = eload
+	url = https://gitlab.com/easyflash/eload.git
+[submodule "libef3usb"]
+	path = libef3usb
+	url = https://gitlab.com/easyflash/libef3usb.git
