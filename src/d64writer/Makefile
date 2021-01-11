@@ -15,15 +15,15 @@ obj += obj/d64writer.o
 obj += obj/write_disk.o
 
 inc      := src
-inc      += ../../../libs/libef3usb/src
-inc      += ../../../libs/eload/src
+inc      += ../../libef3usb/src
+inc      += ../../eload/src
 
 INCLUDE  := $(addprefix -I,$(inc))
 
 DEFINE   := -DEFVERSION=\"${version}\"
 
-libef3usb := ../../../libs/libef3usb/libef3usb.lib
-libeload  := ../../../libs/eload/eload.lib
+libef3usb := ../../libef3usb/libef3usb.lib
+libeload  := ../../eload/eload.lib
 
 .PHONY: all
 all: $(name).prg
@@ -60,9 +60,10 @@ obj:
 	mkdir -p $@
 
 $(name).prg: obj/crt0.o $(obj) src/ld.cfg $(libef3usb) $(libeload)
-	ld65 -o $@ -m $@.map -C src/ld.cfg obj/crt0.o $(obj) \
-		--lib  $(libef3usb) $(libeload) \
-		-L /usr/local/lib/cc65/lib --lib c64.lib
+	#ld65 -o $@ -m $@.map -C src/ld.cfg obj/crt0.o $(obj) \
+	#	--lib  $(libef3usb) $(libeload) \
+	#	-L /usr/local/lib/cc65/lib --lib c64.lib
+	cl65 -o $@ -m $@.map -C src/ld.cfg -t c64 $(obj) $(libef3usb) $(libeload)
 	cat $@.map | grep -e "^Name\|^CODE\|^DATA\|^BSS\|^RODATA\|^LOWCODE"
 
 .PHONY: clean
