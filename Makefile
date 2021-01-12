@@ -40,27 +40,27 @@ cxxlibs        = $(CXXLIBS)
 ldflags        = $(LDFLAGS)
 
 ifeq ($(win32), yes)
-    app_name      := EasyTransfer.exe
-    ef3xfer_name  := ef3xfer.exe
-    host          := i686-w64-mingw32
-    cxx           := $(host)-c++
-    cc            := $(host)-gcc
-    windres       := $(host)-windres
-    ldflags       += -static-libstdc++ -static-libgcc
-    outbase       := $(top_dir)/out_win32
-    archive_fmt   := zip
-    icon_resize   := -resize 32x32
+	app_name      := EasyTransfer.exe
+	ef3xfer_name  := ef3xfer.exe
+	host          := i686-w64-mingw32
+	cxx           := $(host)-c++
+	cc            := $(host)-gcc
+	windres       := $(host)-windres
+	ldflags       += -static-libstdc++ -static-libgcc
+	outbase       := $(top_dir)/out_win32
+	archive_fmt   := zip
+	icon_resize   := -resize 32x32
 else
-    app_name      := easytransfer
-    ef3xfer_name  := ef3xfer
-    cxx           := c++
-    cc            := gcc
-    outbase       := $(top_dir)/out
-    cxxflags      += $(shell wx-config --cxxflags)
-    cxxlibs       += $(shell wx-config --libs) -lftdi -lpthread
-    clibs         += -lftdi 
-    archive_fmt   := tar.bz2
-    icon_resize   :=
+	app_name      := easytransfer
+	ef3xfer_name  := ef3xfer
+	cxx           := c++
+	cc            := gcc
+	outbase       := $(top_dir)/out
+	cxxflags      += $(shell wx-config --cxxflags)
+	cxxlibs       += $(shell wx-config --libs) -lftdi -lpthread
+	clibs         += -lftdi 
+	archive_fmt   := tar.bz2
+	icon_resize   :=
 
 	# Where to install on "make install"?
 	PREFIX        := /usr/local
@@ -91,11 +91,22 @@ else
     ldflags       += -Wl,--strip-all
 endif
 
+base_version := 1.3.0
+
+result_0 := yes
+$(shell which git > /dev/null)
+have_git := $(result_$(.SHELLSTATUS))
+
+ifeq "$(have_git)" "yes"
+	git_modified    := $(shell git diff --exit-code > /dev/null || echo "-modified")
+	version        	:= $(base_version)-$(shell git rev-parse --short HEAD)$(git_modified)
+else
+	version         := $(base_version)-unknown
+endif
+
 ifneq "$(release)" "yes"
-	version        := $(shell date +%y%m%d-%H%M)
 	version_suffix :=
 else
-	version        := 1.3.0
 	version_suffix := -$(version)
 endif
 
@@ -124,16 +135,24 @@ cxxflags  += -I$(objdir)
 ifeq ($(win32), yes)
     include make/win32-cross-mingw/cross-wx.mk
     include make/win32-cross-mingw/cross-ftdi.mk
-pre_deps: libftdi libusb install-wxwidgets
+pre_deps: eload libef3usb libftdi libusb install-wxwidgets
 else
-pre_deps:
+pre_deps: eload libef3usb
 endif
 
+eload libef3usb:
+	$(warning )
+	$(warning *** Submodules missing, please use 'git clone --recurse-submodules' next time.)
+	$(warning *** Or use 'make submodules' now.)
+	$(warning )
+	$(error Giving up)
+
+.PHONY: submodules
+submodules:
+	git submodule update --init --recursive
 
 ###############################################################################
-###############################################################################
 # Input and output files
-###############################################################################
 ###############################################################################
 
 # list of source files to be compiled
@@ -188,11 +207,8 @@ src_archives :=
 src_archives += $(libusb_dir).tar.bz2
 src_archives += $(libftdi_dir).tar.gz
 
-
-###############################################################################
 ###############################################################################
 # Variable transformations
-###############################################################################
 ###############################################################################
 
 ###############################################################################
@@ -221,9 +237,7 @@ endif
 headers := $(wildcard $(srcdir)/*.h) $(xpm)
 
 ###############################################################################
-###############################################################################
 # Rules
-###############################################################################
 ###############################################################################
 
 .PHONY: all
@@ -288,7 +302,7 @@ $(outdir)/%.txt: $(srcdir)/../%
 #$(outbase)/$(prj_name)/mingwm10.dll: /usr/share/doc/mingw32-runtime/mingwm10.dll.gz
 #	gunzip -c $^ > $@
 
-$(srcdir)/d64writer/d64writer.prg: always
+$(srcdir)/d64writer/d64writer.prg: always | pre_deps 
 	$(MAKE) -C $(dir $@)
 
 $(objdir)/EasyTransfer.res.o: $(objdir)/easytransfer.ico
