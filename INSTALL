@@ -4,30 +4,31 @@ This document describes how to build EasyTransfer from source.
 Linux and similar systems
 =========================
 
-1. install libwxgtk2.8-dev or whatever name it has on your system. This will
-   hopefully also install all other dependencies like libwxbase2.8-dev
-   install libftdi-dev and libusb-dev
+1. Install the following packages, the packages names may be different on your
+   system:
 
-2. compile it (as normal user) using these commands:
+   `sudo apt install libwxgtk3.0-gtk3-dev libftdi-dev and libusb-dev`
 
-   make
+2. Compile it (as normal user):
 
-   If you need the command line tool only, you can use:
+   `make`
 
-   make ef3xfer
+   If you need the command line tool `ef3xfer` only, you can use:
+
+   `make ef3xfer`
 
 3. Install it (optional, as root) using this command:
 
-   sudo make install
+   `sudo make install`
 
 Step 3 should create a menu entry for Gnome, KDE or Xfce. Note that make
-install does not work for ef3xfer only.
+install does not work for `ef3xfer` only.
 
 Permissions on Linux
 --------------------
 
-To access the EasyFlash 3 without being root, on Debian derived systems it
-might help to create a new udev rule file:
+To access the EasyFlash 3 on Debian derived systems without being root, create
+a new udev rule file:
 
 sudo nano /etc/udev/rules.d/80-easyflash.rules
 
@@ -35,20 +36,22 @@ add following content:
 
 SUBSYSTEM=="usb", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="8738", MODE="0664", GROUP="plugdev"
 
-finally restart the service and re-plug your EasyFlash 3.
+finally re-plug your EasyFlash 3.
 
-sudo restart udev
-
-Do note forget to add your user account to the group plugdev.
+Add your user account to the group plugdev, log out and log in again.
 Other distributions might work similar.
 
 Windows
 =======
 
-To cross compile the software on Linux for Windows, you need following
+To cross compile the software on Linux for Windows, you need the following
 packages (Debian/Ubuntu naming):
-gcc-mingw-w64-i686 g++-mingw-w64-i686 cmake dos2unix
 
+`sudo apt install gcc-mingw-w64-i686 g++-mingw-w64-i686 cmake dos2unix`
+
+Then build it:
+
+`make win32=yes`
 
 Mac OS X
 ========

@@ -114,7 +114,6 @@ EasyTransferMainFrame::EasyTransferMainFrame(wxFrame* parent, const wxString& ti
     pOuterSizer->AddSpacer(10);
     m_pTextCtrlLog = new wxTextCtrl(pPanel, wxID_ANY, _(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY);
     m_pTextCtrlLog->SetMinSize(wxSize(500, 200));
-    //m_pTextCtrlLog->
     pOuterSizer->Add(m_pTextCtrlLog, 1, wxEXPAND | wxALL);
 
     pPanel->SetSizer(pOuterSizer);
@@ -135,22 +134,14 @@ void EasyTransferMainFrame::OnButton(wxCommandEvent& event)
 
     if (event.GetEventObject() == m_pButtonStart)
     {
-        /*if (m_pInputFilePicker->GetPath().size())
-            DoIt();*/
         pWindow = m_pNotebook->GetCurrentPage();
         if (pWindow)
         {
-            pWindow->AddPendingEvent(event);
+            pWindow->GetEventHandler()->AddPendingEvent(event);
         }
     }
     else if (event.GetEventObject() == m_pButtonQuit)
     {
-        /*if (m_pWorkerThread)
-        {
-            m_pWorkerThread->Kill();
-            delete m_pWorkerThread;
-            m_pWorkerThread = NULL;
-        }*/
         Close();
     }
 }

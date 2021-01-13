@@ -24,7 +24,8 @@
 #
 
 cross          := $(host)
-wx-version     := wxMSW-2.8.12
+wx-version     := wxWidgets-3.0.5
+wx-url         := https://github.com/wxWidgets/wxWidgets/releases/download/v3.0.5/wxWidgets-3.0.5.zip
 wx-build-dir   := $(outbase)/wx-build
 wx-prefix      := $(outbase)/$(cross)-$(wx-version)
 sudo           := 
@@ -39,10 +40,10 @@ cxxlibs        += $(shell $(wx-prefix)/bin/wx-config --libs)
 .PHONY: install-wxwidgets
 install-wxwidgets: $(wx-build-dir)/$(wx-version)/3-installed
 
-$(wx-build-dir)/$(wx-version)/0-depacked: $(archive_dir)/$(wx-version).tar.bz2
+$(wx-build-dir)/$(wx-version)/0-depacked: $(archive_dir)/$(wx-version).zip
 	mkdir -p $(wx-build-dir)
-	tar xjf $(archive_dir)/$(wx-version).tar.bz2 -C $(wx-build-dir)
-	patch -i $(archive_dir)/filefn.wx2.8.12.diff $(wx-build-dir)/$(wx-version)/include/wx/filefn.h
+	unzip -q $(archive_dir)/$(wx-version).zip -d $(wx-build-dir)/$(wx-version)
+	#patch -i $(archive_dir)/filefn.wx2.8.12.diff $(wx-build-dir)/$(wx-version)/include/wx/filefn.h
 	touch $@
 
 $(wx-build-dir)/$(wx-version)/1-configured: $(wx-build-dir)/$(wx-version)/0-depacked
@@ -59,6 +60,6 @@ $(wx-build-dir)/$(wx-version)/3-installed: $(wx-build-dir)/$(wx-version)/2-compi
 	touch $@
 
 # download wxwidgets
-$(archive_dir)/$(wx-version).tar.bz2:
+$(archive_dir)/$(wx-version).zip:
 	mkdir -p $(archive_dir)
-	cd $(archive_dir) && wget "http://downloads.sourceforge.net/wxwindows/$(wx-version).tar.bz2"
+	cd $(archive_dir) && wget $(wx-url)

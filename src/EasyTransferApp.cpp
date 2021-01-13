@@ -98,6 +98,7 @@ void EasyTransferApp::OnInitCmdLine(wxCmdLineParser& parser)
     parser.SetDesc(aCmdLineDesc);
     // must refuse '/' as parameter starter or cannot use "/path" style paths
     parser.SetSwitchChars (wxT("-"));
+    wxApp::OnInitCmdLine(parser);
 }
 
 
