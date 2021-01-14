@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 
 
@@ -7,14 +7,14 @@ if __name__ == '__main__':
         if sys.argv[1] == '-':
             instream = sys.stdin
         else:
-            instream = file(sys.argv[1],'rb')
+            instream = open(sys.argv[1],'rb')
         if sys.argv[2] == '-':
             outstream = sys.stdout
         else:
-            outstream = file(sys.argv[2], 'wt')
+            outstream = open(sys.argv[2], 'wt')
         varname = sys.argv[3]
     else:
-        print "Usage: bin2c infile outfile varname"
+        print("Usage: bin2c infile outfile varname")
         sys.exit(0)
 
     outstream.write("\n\nconst unsigned char %s[] = {\n    " % varname)

@@ -135,12 +135,12 @@ cxxflags  += -I$(objdir)
 ifeq ($(win32), yes)
     include make/win32-cross-mingw/cross-wx.mk
     include make/win32-cross-mingw/cross-ftdi.mk
-pre_deps: eload libef3usb libftdi libusb install-wxwidgets
+pre_deps: eload/Makefile libef3usb/Makefile libftdi libusb install-wxwidgets
 else
-pre_deps: eload libef3usb
+pre_deps: eload/Makefile libef3usb/Makefile
 endif
 
-eload libef3usb:
+eload/Makefile libef3usb/Makefile:
 	$(warning )
 	$(warning *** Submodules missing, please use 'git clone --recurse-submodules' next time.)
 	$(warning *** Or use 'make submodules' now.)
@@ -156,7 +156,7 @@ submodules:
 ###############################################################################
 
 # list of source files to be compiled
-src := 
+src :=
 src += EasyTransferApp.cpp
 src += EasyTransferMainFrame.cpp
 src += WorkerThread.cpp
